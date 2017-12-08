@@ -1,4 +1,4 @@
-// Copyright 2016 Google Inc.
+// Copyright 2017 Google Inc.
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -16,6 +16,7 @@ syntax = "proto3";
 
 package google.monitoring.v3;
 
+import "google/api/annotations.proto";
 import "google/api/distribution.proto";
 import "google/protobuf/duration.proto";
 import "google/protobuf/timestamp.proto";
@@ -25,7 +26,6 @@ option go_package = "google.golang.org/genproto/googleapis/monitoring/v3;monitor
 option java_multiple_files = true;
 option java_outer_classname = "CommonProto";
 option java_package = "com.google.monitoring.v3";
-option php_namespace = "Google\\Cloud\\Monitoring\\V3";
 
 
 // A single strongly-typed value.
@@ -66,8 +66,9 @@ message TimeInterval {
 
 // Describes how to combine multiple time series to provide different views of
 // the data.  Aggregation consists of an alignment step on individual time
-// series (`per_series_aligner`) followed by an optional reduction of the data
-// across different time series (`cross_series_reducer`).  For more details, see
+// series (`alignment_period` and `per_series_aligner`) followed by an optional
+// reduction step of the data across the aligned time series
+// (`cross_series_reducer` and `group_by_fields).  For more details, see
 // [Aggregation](/monitoring/api/learn_more#aggregation).
 message Aggregation {
   // The Aligner describes how to bring the data points in a single
@@ -83,12 +84,20 @@ message Aggregation {
     // delta metric to a delta metric requires that the alignment
     // period be increased. The value type of the result is the same
     // as the value type of the input.
+    //
+    // One can think of this aligner as a rate but without time units; that
+    // is, the output is conceptually (second_point - first_point).
     ALIGN_DELTA = 1;
 
     // Align and convert to a rate. This alignment is valid for
     // cumulative metrics and delta metrics with numeric values. The output is a
     // gauge metric with value type
     // [DOUBLE][google.api.MetricDescriptor.ValueType.DOUBLE].
+    //
+    // One can think of this aligner as conceptually providing the slope of
+    // the line that passes through the value at the start and end of the
+    // window. In other words, this is conceptually ((y1 - y0)/(t1 - t0)),
+    // and the output unit is one that has a "/time" dimension.
     ALIGN_RATE = 2;
 
     // Align by interpolating between adjacent points around the
@@ -321,4 +330,50 @@ message Aggregation {
   // a single output time series. If `crossSeriesReducer` is not
   // defined, this field is ignored.
   repeated string group_by_fields = 5;
+}
+
+// Specifies an ordering relationship on two arguments, here called left and
+// right.
+enum ComparisonType {
+  // No ordering relationship is specified.
+  COMPARISON_UNSPECIFIED = 0;
+
+  // The left argument is greater than the right argument.
+  COMPARISON_GT = 1;
+
+  // The left argument is greater than or equal to the right argument.
+  COMPARISON_GE = 2;
+
+  // The left argument is less than the right argument.
+  COMPARISON_LT = 3;
+
+  // The left argument is less than or equal to the right argument.
+  COMPARISON_LE = 4;
+
+  // The left argument is equal to the right argument.
+  COMPARISON_EQ = 5;
+
+  // The left argument is not equal to the right argument.
+  COMPARISON_NE = 6;
+}
+
+// The tier of service for a Stackdriver account. Please see the
+// [service tiers documentation](https://cloud.google.com/monitoring/accounts/tiers)
+// for more details.
+enum ServiceTier {
+  // An invalid sentinel value, used to indicate that a tier has not
+  // been provided explicitly.
+  SERVICE_TIER_UNSPECIFIED = 0;
+
+  // The Stackdriver Basic tier, a free tier of service that provides basic
+  // features, a moderate allotment of logs, and access to built-in metrics.
+  // A number of features are not available in this tier. For more details,
+  // see [the service tiers documentation](https://cloud.google.com/monitoring/accounts/tiers).
+  SERVICE_TIER_BASIC = 1;
+
+  // The Stackdriver Premium tier, a higher, more expensive tier of service
+  // that provides access to all Stackdriver features, lets you use Stackdriver
+  // with AWS accounts, and has a larger allotments for logs and metrics. For
+  // more details, see [the service tiers documentation](https://cloud.google.com/monitoring/accounts/tiers).
+  SERVICE_TIER_PREMIUM = 2;
 }
