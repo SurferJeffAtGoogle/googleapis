@@ -32,6 +32,12 @@ option php_namespace = "Google\\Ads\\GoogleAds\\V0\\Services";
 
 // Service to manage bidding strategies.
 service BiddingStrategyService {
+  // Don't know what these should be; just adding something so generation passes.
+  option (google.api.default_host) = "ads.googleapis.com";
+  option (google.api.oauth) = {
+    scopes: ["https://www.googleapis.com/auth/cloud-platform"]
+  };
+  
   // Returns the requested bidding strategy in full detail.
   rpc GetBiddingStrategy(GetBiddingStrategyRequest) returns (google.ads.googleads.v0.resources.BiddingStrategy) {
     option (google.api.http) = {

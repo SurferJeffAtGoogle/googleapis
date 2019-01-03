@@ -33,6 +33,12 @@ option php_namespace = "Google\\Ads\\GoogleAds\\V0\\Services";
 
 // Service to generate keyword ideas.
 service KeywordPlanIdeaService {
+  // Don't know what these should be; just adding something so generation passes.
+  option (google.api.default_host) = "ads.googleapis.com";
+  option (google.api.oauth) = {
+    scopes: ["https://www.googleapis.com/auth/cloud-platform"]
+  };
+  
   // Returns a list of keyword ideas.
   rpc GenerateKeywordIdeas(GenerateKeywordIdeasRequest) returns (GenerateKeywordIdeaResponse) {
     option (google.api.http) = {
