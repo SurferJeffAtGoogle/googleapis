@@ -1,0 +1,111 @@
+# MUST be at the top. It tells YAML parser this file is an API service config.
+type: google.api.Service
+# Specifies the version of the configuration schema. For a new service, always
+# use the latest.
+config_version: 3
+# The name of the API. May not match its DNS name.
+name: irm.googleapis.com
+# The title
+title: Stackdriver Incident Response & Management API
+documentation:
+  overview: |
+    The Stackdriver Incident Response & Management API provides access to incident data.
+    (== suppress_warning control-presence ==)
+# The list of API interfaces supported by the service.
+apis:
+- name: google.cloud.irm.v1alpha2.IncidentService
+http:
+  fully_decode_reserved_expansion: true
+discovery:
+  canonical_name: IRM
+  discovery_per_version:
+  - version: v1alpha2
+    schema_name_template: ${outer_message_name}${message_name}
+
+usage:
+  # http://g3doc/google/internal/tos
+  requirements: "serviceusage.googleapis.com/tos/cloud"
+
+metrics:
+# Define a metric for read requests.
+- name: irm.googleapis.com/read_requests
+  display_name: Read requests
+  metric_kind: DELTA
+  value_type: INT64
+
+# Define a metric for write requests.
+- name: irm.googleapis.com/write_requests
+  display_name: Write requests
+  metric_kind: DELTA
+  value_type: INT64
+
+quota:
+  limits:
+  # TODO(b/121124454) revisit these quota values
+  # Defines per-minute per-project limit on the read requests
+  - name: ReadsPerMinutePerProject
+    metric: irm.googleapis.com/read_requests
+    unit: "1/min/{project}"
+    values:
+      VERY_LOW: 10
+      LOW: 50
+      STANDARD: 100
+      HIGH: 500
+      VERY_HIGH: 5000
+
+  # Defines per-minute per-project limit on the write requests.
+  - name: WritesPerMinutePerProject
+    metric: irm.googleapis.com/write_requests
+    unit: "1/min/{project}"
+    values:
+      VERY_LOW: 10
+      LOW: 50
+      STANDARD: 100
+      HIGH: 500
+      VERY_HIGH: 5000
+
+  metric_rules:
+  # Apply read quota to all methods, except the methods listed below.
+  - selector: "google.cloud.irm.v1alpha2.*"
+    metric_costs:
+      irm.googleapis.com/read_requests: '1'
+  # Apply write quota to all methods which cause an update.
+  - selector: >
+      google.cloud.irm.v1alpha2.IncidentService.CreateIncident,
+      google.cloud.irm.v1alpha2.IncidentService.CreateSignal,
+      google.cloud.irm.v1alpha2.IncidentService.CreateAnnotation,
+      google.cloud.irm.v1alpha2.IncidentService.CreateTag,
+      google.cloud.irm.v1alpha2.IncidentService.CreateArtifact,
+      google.cloud.irm.v1alpha2.IncidentService.CreateSubscription,
+      google.cloud.irm.v1alpha2.IncidentService.CreateIncidentRoleAssignment,
+      google.cloud.irm.v1alpha2.IncidentService.UpdateIncident,
+      google.cloud.irm.v1alpha2.IncidentService.EscalateIncident,
+      google.cloud.irm.v1alpha2.IncidentService.UpdateSignal,
+      google.cloud.irm.v1alpha2.IncidentService.AcknowledgeSignal,
+      google.cloud.irm.v1alpha2.IncidentService.CloseSignal,
+      google.cloud.irm.v1alpha2.IncidentService.DeleteTag,
+      google.cloud.irm.v1alpha2.IncidentService.UpdateArtifact,
+      google.cloud.irm.v1alpha2.IncidentService.DeleteArtifact,
+      google.cloud.irm.v1alpha2.IncidentService.DeleteSubscription,
+      google.cloud.irm.v1alpha2.IncidentService.DeleteIncidentRoleAssignment,
+      google.cloud.irm.v1alpha2.IncidentService.RequestIncidentRoleHandover,
+      google.cloud.irm.v1alpha2.IncidentService.ForceIncidentRoleHandover,
+      google.cloud.irm.v1alpha2.IncidentService.ConfirmIncidentRoleHandover,
+      google.cloud.irm.v1alpha2.IncidentService.CancelIncidentRoleHandover,
+      google.cloud.irm.v1alpha2.IncidentService.SendShiftHandoff
+    metric_costs:
+      irm.googleapis.com/write_requests: '1'
+
+legacy:
+  taxonomy_id: 7815386590  # http://teams/product/7815386590
+  bug_component_id: 194505
+  healthz: irm-incident-api
+  email: irm-eng@google.com
+  oncall: irm-oncall@google.com
+  support: irm-users@google.com
+  mdb: irm-prod
+  devconsole:
+    learnmore_url: "https://cloud.google.com/incident-response/docs/"
+    example_url: "https://developers.google.com/apis-explorer/#p/irm/v1alpha2/"
+  gwslog:
+    log_type: tmp-incident-api-weblog

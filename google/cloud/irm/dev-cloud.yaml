@@ -1,0 +1,35 @@
+# Dev environment specific config for IRM Incident API.
+type: google.api.Service
+name: dev-irm-cloud.sandbox.googleapis.com
+title: Stackdriver Incident Response & Management API (Dev)
+producer_project_id: irm-api-producer-cloud-dev
+
+# Dev doesn't connect to Chemist so set an open quota to make the linter happy and open all
+# visibility
+quota:
+  rules:
+  - selector: "*"
+    groups:
+    - group: unlimited
+  groups:
+  - name: unlimited
+    limits:
+    - name: unlimited
+      limit_by: CLIENT_PROJECT
+      default_limit: -1
+      max_limit: -1
+      duration: 100s
+
+filtering:
+  rules:
+  - selector: '*'
+    # Internally, all fields are visible.
+    skip_filters:
+    - VISIBILITY_FILTER
+
+endpoints:
+- name: dev-irm-cloud.sandbox.googleapis.com
+  target: gslb:/irm-incident-api-api-dev-cloud
+  aliases:
+  - dev-irm-cloud-googleapis.sandbox.google.com
+  - content-dev-irm-cloud.sandbox.googleapis.com

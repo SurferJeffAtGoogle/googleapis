@@ -1,0 +1,17 @@
+type: google.api.Service
+authentication:
+  rules:
+  - selector: '*'
+    oauth:
+      # Only support cloud-platform scope.
+      canonical_scopes: https://www.googleapis.com/auth/cloud-platform
+    browser_first_party_auth:
+      # API_CLOUD_PLATFORM_INTERNAL is equivalent to the cloud-platform scope
+      # for first party auth.
+      # API_NDEV_MONITORING grants full access to Cloud Monitoring API
+      # (go/gcm-apis).
+      scope_codes: |-
+        API_CLOUD_PLATFORM_INTERNAL,
+        API_NDEV_MONITORING
+    use_rpc_security_policy: DELEGATED
+    allow_without_credential: true

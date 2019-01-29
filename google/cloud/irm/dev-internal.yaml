@@ -1,0 +1,25 @@
+# Dev environment specific config for IRM Incident API.
+type: google.api.Service
+name: dev-irm-internal.sandbox.googleapis.com
+title: Stackdriver Incident Response & Management API (Internal Dev)
+filtering:
+  rules:
+  - selector: '*'
+    # Internally, all fields are visible.
+    skip_filters:
+    - VISIBILITY_FILTER
+
+# Dev doesn't connect to Chemist so set an open quota to make the linter happy
+quota:
+  rules:
+  - selector: "*"
+    groups:
+    - group: unlimited
+  groups:
+  - name: unlimited
+    limits:
+    - name: unlimited
+      limit_by: CLIENT_PROJECT
+      default_limit: -1
+      max_limit: -1
+      duration: 100s

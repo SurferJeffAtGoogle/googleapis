@@ -1,0 +1,26 @@
+# Staging environment specific config for IRM Incident Private API.
+type: google.api.Service
+name: staging-irm-internal.sandbox.googleapis.com
+title: Stackdriver Incident Response & Management API (Internal Staging)
+
+filtering:
+  rules:
+  - selector: '*'
+    # Internally, all fields are visible.
+    skip_filters:
+    - VISIBILITY_FILTER
+
+# Internal doesn't connect to Chemist so set an open quota to make the linter happy
+quota:
+  rules:
+  - selector: "*"
+    groups:
+    - group: unlimited
+  groups:
+  - name: unlimited
+    limits:
+    - name: unlimited
+      limit_by: CLIENT_PROJECT
+      default_limit: -1
+      max_limit: -1
+      duration: 100s
