@@ -1,0 +1,8 @@
+# Production environment specific config for IRM Incident Private API.
+type: google.api.Service
+name: irm.googleapis.com
+title: Stackdriver Incident Response & Management API
+producer_project_id: irm-api-producer-cloud-prod
+
+control:
+  environment: servicecontrol.googleapis.com

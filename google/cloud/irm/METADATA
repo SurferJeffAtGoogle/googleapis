@@ -1,0 +1,17 @@
+presubmit: {
+  include_presubmit: "//depot/google3/production/incident_response_management/common.METADATA"
+}
+presubmit: {
+  check_lint: {}
+  check_tabs: {}
+  check_tests: {
+    failure_status: ERROR
+    project: "irm.gcp_lumen_anomaly_detection_analysis_module"
+    project: "irm.gcp_lumen_anomaly_detection_deduction_module"
+    project: "irm.production_entity_resolver"
+  }
+  include_presubmit: "//depot/google3/production/pod/includes/tricorder/METADATA"
+}
+# TO FUTURE AUTOMATED POD CHANGE REVIEWERS:
+#  review_notify and tricorder.ProtoBestPractices are already specified in the
+#  common.METADATA.

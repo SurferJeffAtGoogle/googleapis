@@ -1,0 +1,15 @@
+# Staging environment specific config for IRM Incident Private API.
+type: google.api.Service
+name: staging-irm-cloud.sandbox.googleapis.com
+title: Stackdriver Incident Response & Management API (Staging)
+producer_project_id: irm-api-producer-cloud-staging
+
+control:
+  environment: servicecontrol.googleapis.com
+
+endpoints:
+- name: staging-irm-cloud.sandbox.googleapis.com
+  target: gslb:/irm-incident-api-api-staging-cloud
+  aliases:
+  - staging-irm-cloud-googleapis.sandbox.google.com
+  - content-staging-irm-cloud.sandbox.googleapis.com
